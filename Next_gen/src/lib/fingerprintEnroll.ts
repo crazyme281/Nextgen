@@ -13,7 +13,7 @@ import {
 export type EnrollResult = 'enabled' | 'skipped' | 'failed' | 'unavailable';
 
 const offeredFor = new Set<string>();
-type PresentAlert = (options: AlertOptions) => Promise<void> | void;
+type PresentAlert = (options: AlertOptions & { onDidDismiss?: () => void }) => Promise<void> | void;
 
 /**
  * The one-and-only "use your fingerprint?" step, shared by the login screen and the in-app fallback.
@@ -35,11 +35,11 @@ export async function offerFingerprintEnrollment(userId: string, presentAlert: P
         header: tr('Use your fingerprint?'),
         message: tr('Open Nextgen with your fingerprint from now on. It also works without internet, so you can read your saved messages offline.'),
         backdropDismiss: false,
+        onDidDismiss: () => resolve(false), // no-op if a button already resolved it (backdrop/back close)
         buttons: [
           { text: tr('Not now'), role: 'cancel', handler: () => resolve(false) },
           { text: tr('Enable'), handler: () => resolve(true) },
         ],
-        onDidDismiss: () => resolve(false), // no-op if a button already resolved it
       });
     });
 

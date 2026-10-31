@@ -33,7 +33,7 @@ const ClaimDevice: React.FC = () => {
       const encryptedUserId = params.get('c');
       const iv = params.get('iv');
       if (!requestId || !encryptedUserId || !iv) {
-        setStatus(tr('error'));
+        setStatus('error');
         setMessage(tr('This link is missing information and can’t be used.'));
         return;
       }
@@ -45,7 +45,7 @@ const ClaimDevice: React.FC = () => {
       const result = claimed as { email: string; tokenHash: string } | { error: string } | null;
 
       if (claimError || !result || 'error' in result) {
-        setStatus(tr('error'));
+        setStatus('error');
         setMessage((result && 'error' in result && result.error) || 'This pairing link is no longer valid.');
         return;
       }
@@ -57,7 +57,7 @@ const ClaimDevice: React.FC = () => {
         type: 'magiclink',
       });
       if (otpError) {
-        setStatus(tr('error'));
+        setStatus('error');
         setMessage(tr('Could not complete sign-in on this device.'));
         return;
       }
@@ -72,7 +72,7 @@ const ClaimDevice: React.FC = () => {
         });
       }
 
-      setStatus(tr('success'));
+      setStatus('success');
       setMessage(tr('This device is now linked to your account.'));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
