@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Behind the status/navigation bars; matches the app's dark base (#0a0714). -->
+    <color name="ng_window_bg">#0A0714</color>
+</resources>

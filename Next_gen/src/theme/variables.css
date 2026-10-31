@@ -1,0 +1,159 @@
+/* ============================================================
+   Nextgen brand theme
+   Single source of truth for the gradient identity introduced
+   on the login screen (src/pages/auth/Login.tsx) — mapped onto
+   Ionic's CSS variables so every page inherits it automatically.
+   Dark is the base palette; the light block mirrors login's
+   light-mode variant and follows the OS/browser color scheme.
+   ============================================================ */
+:root {
+  /* Brand gradient stops (ribbon "N" blue -> violet -> magenta) */
+  --ng-grad-blue: #17C9FF;
+  --ng-grad-blue-2: #3D6BFF;
+  --ng-grad-violet: #8A3DFF;
+  --ng-grad-magenta: #E339D6;
+  --ng-gradient-brand: linear-gradient(90deg, #1FA6FF, #7A3DFF 55%, #E339D6);
+  --ng-gradient-brand-diag: linear-gradient(135deg, #17C9FF 0%, #3D6BFF 38%, #8A3DFF 66%, #E339D6 100%);
+
+  /* Legacy/compat names kept so existing components (ChatsList
+     filter chips, unread badges, FAB, trust badges, etc.) pick
+     up the new brand tone without needing per-file edits. */
+  --ng-blue: #3D6BFF;
+  --ng-blue-2: #17C9FF;
+  --ng-deep-blue: #14226B;
+  --ng-black: #0A0714;
+  --ng-graphite: #171226;
+  --ng-warm-white: #F3F6FB;
+  --ng-verified-green: #16A765;
+  --ng-security-red: #D92020;
+
+  --ion-color-primary: #3D6BFF;
+  --ion-color-primary-rgb: 61, 107, 255;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #3660E0;
+  --ion-color-primary-tint: #5A80FF;
+
+  --ion-color-secondary: #8A3DFF;
+  --ion-color-success: #16A765;
+  --ion-color-danger: #D92020;
+  --ion-color-warning: #F4B400;
+
+  /* App shell — same radial dark wash as the login background */
+  --ng-app-bg: radial-gradient(ellipse at 15% 10%, #120a24 0%, #0a0714 45%, #060410 100%);
+  --ng-glow-left: radial-gradient(circle, rgba(60,110,255,0.20) 0%, rgba(60,110,255,0) 70%);
+  --ng-glow-right: radial-gradient(circle, rgba(200,50,220,0.16) 0%, rgba(200,50,220,0) 70%);
+  --ng-dot: rgba(150,140,255,0.55);
+  --ng-icon-accent: #8C7BFF;
+
+  --ion-background-color: #0a0714;
+  --ion-background-color-rgb: 10, 7, 20;
+  --ion-text-color: #EDEBF5;
+  --ion-text-color-rgb: 237, 235, 245;
+
+  --ion-item-background: rgba(255,255,255,0.045);
+  --ion-toolbar-background: rgba(10,7,20,0.92);
+  --ion-tab-bar-background: rgba(9,6,18,0.96);
+  --ion-card-background: rgba(255,255,255,0.045);
+  --ion-border-color: rgba(140,120,220,0.22);
+  --ion-toolbar-border-color: rgba(140,120,220,0.18);
+
+  --ion-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Light mode — mirrors the login page's light variant, follows
+   the device/browser color-scheme preference app-wide. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --ng-black: #F7F4FC;
+    --ng-graphite: #FFFFFF;
+    --ng-warm-white: #2A2438;
+
+    --ng-app-bg: radial-gradient(ellipse at 15% 8%, #ffffff 0%, #f7f4fc 55%, #f2eefa 100%);
+    --ng-glow-left: radial-gradient(circle, rgba(80,120,255,0.10) 0%, rgba(80,120,255,0) 70%);
+    --ng-glow-right: radial-gradient(circle, rgba(210,60,220,0.08) 0%, rgba(210,60,220,0) 70%);
+    --ng-dot: rgba(120,110,220,0.45);
+    --ng-icon-accent: #7C3AED;
+
+    --ion-background-color: #f7f4fc;
+    --ion-background-color-rgb: 247, 244, 252;
+    --ion-text-color: #2A2438;
+    --ion-text-color-rgb: 42, 36, 56;
+
+    --ion-item-background: #ffffff;
+    --ion-toolbar-background: rgba(255,255,255,0.92);
+    --ion-tab-bar-background: rgba(255,255,255,0.96);
+    --ion-card-background: #ffffff;
+    --ion-border-color: #E4DFF0;
+    --ion-toolbar-border-color: #E4DFF0;
+
+    --ion-color-primary: #7C3AED;
+    --ion-color-primary-rgb: 124, 58, 237;
+    --ion-color-primary-shade: #6D2FE0;
+    --ion-color-primary-tint: #8B4FFF;
+  }
+}
+
+.ng-trust-verified { color: var(--ng-verified-green); }
+.ng-trust-risk { color: var(--ng-security-red); }
+.ng-card { border-radius: 18px; }
+
+/* IonActionSheet (and other overlays) render in their own shadow root,
+   so they don't inherit --ion-background-color/--ion-text-color the way
+   normal page content does — Ionic 8's action sheet defaults to its own
+   light preset unless these CSS custom properties are set explicitly.
+   Without this, the "..." chat menu shows as a plain white sheet with
+   default blue buttons, clashing hard with the rest of the dark theme. */
+ion-action-sheet {
+  --background: var(--ion-toolbar-background);
+  --color: var(--ion-text-color);
+  --button-color: var(--ion-text-color);
+  --backdrop-opacity: 0.65;
+}
+
+/* Ionic 8 exposes these shadow-DOM regions via ::part() — plain class
+   selectors like .action-sheet-group don't reach through the shadow
+   boundary, so styling has to go through these instead. */
+ion-action-sheet::part(group) {
+  border-radius: 18px 18px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--ion-border-color);
+  border-bottom: none;
+}
+
+ion-action-sheet::part(group-cancel) {
+  border-radius: 14px;
+  margin-top: 8px;
+  border: 1px solid var(--ion-border-color);
+}
+
+ion-action-sheet::part(button) {
+  border-bottom: 1px solid var(--ion-border-color);
+  font-weight: 500;
+}
+
+ion-action-sheet::part(button):last-child {
+  border-bottom: none;
+}
+
+ion-action-sheet::part(icon) {
+  color: var(--ion-color-primary);
+}
+
+/* Same shadow-root gap applies to alerts and popovers used elsewhere in
+   the app (contact/report dialogs, etc.) — matching them here so nothing
+   else pops up looking like a stock light-mode default. */
+ion-alert {
+  --background: var(--ion-toolbar-background);
+  --backdrop-opacity: 0.65;
+}
+ion-alert::part(message),
+ion-alert::part(header) {
+  color: var(--ion-text-color);
+}
+
+ion-popover {
+  --background: var(--ion-toolbar-background);
+  --color: var(--ion-text-color);
+  --backdrop-opacity: 0.4;
+}

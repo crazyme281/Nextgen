@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Shown behind the status/navigation bars now that the app content is padded
+             clear of them: matches the app's dark base so no light strip appears. -->
+        <item name="android:windowBackground">@color/ng_window_bg</item>
+        <item name="android:statusBarColor">@color/ng_window_bg</item>
+        <item name="android:navigationBarColor">@color/ng_window_bg</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@color/ng_window_bg</item>
+        <item name="android:statusBarColor">@color/ng_window_bg</item>
+        <item name="android:navigationBarColor">@color/ng_window_bg</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
+        <item name="android:background">@drawable/splash</item>
+    </style>
+</resources>

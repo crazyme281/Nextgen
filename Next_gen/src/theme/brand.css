@@ -1,0 +1,111 @@
+/* ============================================================
+   Nextgen brand.css
+   Applies the login screen's dark/light gradient mood to every
+   page: page background, toolbars, tab bar, plus reusable
+   gradient utility classes for text/buttons and the header logo.
+   Imported once in main.tsx — no per-page CSS needed.
+   ============================================================ */
+
+ion-app {
+  position: relative;
+  background: var(--ng-app-bg);
+}
+
+/* Soft ambient brand glow behind every screen, same tone as login,
+   toned down so it never fights with page content. Explicitly kept
+   BELOW real UI via z-index + isolation, since ::after paints last
+   among same-stacking-level siblings and would otherwise render on
+   top of headers/toolbars that don't set their own z-index. */
+ion-app::before,
+ion-app::after {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+}
+ion-app::before {
+  left: -140px;
+  top: 8%;
+  width: 320px;
+  height: 320px;
+  background: var(--ng-glow-left);
+}
+ion-app::after {
+  right: -160px;
+  top: 55%;
+  width: 380px;
+  height: 380px;
+  background: var(--ng-glow-right);
+}
+
+/* Every header/toolbar/tab-bar gets its own stacking context above the
+   fixed glow blobs — this is what was making the header logo (and the
+   rest of the toolbar) intermittently render behind/under the glow and
+   look like it was "disappearing" on some pages. */
+ion-header,
+ion-footer,
+ion-tab-bar {
+  position: relative;
+  z-index: 2;
+}
+
+ion-content {
+  --background: var(--ng-app-bg);
+}
+
+ion-toolbar {
+  --background: var(--ion-toolbar-background);
+  --border-color: var(--ion-toolbar-border-color);
+  --color: var(--ion-text-color);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+ion-tab-bar {
+  --background: var(--ion-tab-bar-background);
+  --border: 1px solid var(--ion-toolbar-border-color);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+}
+
+ion-tab-button {
+  --color: rgba(237,235,245,0.5);
+  --color-selected: var(--ng-grad-blue);
+}
+@media (prefers-color-scheme: light) {
+  ion-tab-button { --color: rgba(42,36,56,0.5); }
+}
+
+/* Gradient wordmark / accent text, matching the login wordmark */
+.ng-grad-text {
+  background: var(--ng-gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+/* Gradient pill button, same recipe as the login "Log in" button */
+.ng-grad-btn {
+  --background: var(--ng-gradient-brand);
+  --background-activated: var(--ng-gradient-brand);
+  --background-hover: var(--ng-gradient-brand);
+  --color: #fff;
+  --border-radius: 27px;
+  font-weight: 700;
+}
+
+/* Small brand mark used in page headers (see components/BrandMark.tsx) */
+.ng-header-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-end: 2px;
+  flex-shrink: 0;
+}
+
+.ng-page-content, .ng-page-content > * {
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,1264 @@
+/* =========================================================================
+   Zorah AI — theme for the ported frontend
+   ========================================================================= */
+/*
+ * Ported wholesale from the original Zorah frontend below this block,
+ * unchanged in structure — every rule still reads the same --zr-*
+ * variable names it always did. What changed is what those variables
+ * resolve TO: this block redefines them scoped to .zr-app (the class each
+ * /ai page's own IonPage carries — ChatPage, SectionPages) instead of
+ * :root, and points
+ * every one at Next Gen's own brand tokens (see src/theme/variables.css)
+ * instead of Zorah's original gold palette. Scoping to .zr-app, rather
+ * than redeclaring --ion-* globally, is what keeps this from leaking out
+ * and re-theming the rest of the app the moment this file loads.
+ */
+.zr-app {
+  height: 100%;
+
+  /* Backgrounds/text/borders: Next Gen's own dark theme already fits —
+     inherited from :root, nothing to override here. Only the
+     Zorah-specific tokens below need a definition at all. */
+  --zr-black: var(--ion-background-color);
+  --zr-panel: var(--ion-item-background);
+  --zr-rail: var(--ion-tab-bar-background);
+  --zr-raised: rgba(255, 255, 255, 0.06);
+  --zr-line: var(--ion-border-color);
+  --zr-line-gold: rgba(61, 107, 255, 0.28);
+
+  /* Was solid gold; now Next Gen's blue -> violet -> magenta gradient. */
+  --zr-gold: #3d6bff;
+  --zr-gold-bright: #8a3dff;
+  --zr-gold-pale: #17c9ff;
+  --zr-gold-deep: #7a3dff;
+  /* Text sitting ON the gradient (send button, active drawer row, user
+     bubble). Gold was dark-on-light; this gradient is saturated blue
+     through magenta, so the readable choice flips to white. */
+  --zr-gold-ink: #ffffff;
+  --zr-gold-wash: rgba(61, 107, 255, 0.1);
+  --zr-gold-gradient: var(--ng-gradient-brand-diag);
+  --zr-gold-gradient-soft: linear-gradient(135deg, rgba(23, 201, 255, 0.14) 0%, rgba(227, 57, 214, 0.1) 100%);
+
+  --zr-text: var(--ion-text-color);
+  --zr-text-dim: rgba(237, 235, 245, 0.62);
+  --zr-text-faint: rgba(237, 235, 245, 0.42);
+
+  --font-display: var(--ion-font-family);
+  --font-body: var(--ion-font-family);
+
+  --zr-rail-w: 88px;
+  --zr-radius-sm: 10px;
+  --zr-radius: 14px;
+  --zr-radius-lg: 22px;
+  --zr-radius-pill: 999px;
+}
+
+/* =========================================================================
+   Zorah AI — application styles
+   Order: logo · splash · shell · rail · drawer · chat · composer · auth
+   ========================================================================= */
+
+/* ---------------------------------------------------------------- Logo -- */
+
+.zorah-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.zorah-logo__glyph {
+  display: block;
+  filter: drop-shadow(0 6px 22px rgba(61, 107, 255, 0.22));
+}
+
+.zorah-logo__word {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.zorah-logo__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2.1rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1;
+  background: var(--zr-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Indent compensates for the trailing letter-space so the wordmark
+     optically centres under the glyph. */
+  text-indent: 0.16em;
+}
+
+.zorah-logo__rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.44em;
+  text-indent: 0.44em;
+  color: var(--zr-gold);
+}
+
+.zorah-logo__rule i {
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--zr-gold), transparent);
+}
+
+/* -------------------------------------------------------------- Drawer -- */
+
+.app-menu {
+  --background: var(--zr-panel);
+  --width: 288px;
+  --border: none;
+}
+
+.app-menu ion-content {
+  --background: var(--zr-panel);
+}
+
+.menu-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 18px 14px;
+  padding-top: calc(18px + var(--ion-safe-area-top, 0px));
+  border-bottom: 1px solid var(--zr-line);
+}
+
+.menu-head__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--zr-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 14px 10px;
+}
+
+/* Primary action: solid gold. Secondary: gold hairline. */
+.menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--zr-radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    filter 160ms ease,
+    background 160ms ease;
+}
+
+.menu-btn ion-icon {
+  font-size: 18px;
+}
+
+.menu-btn--gold {
+  background: var(--zr-gold-gradient);
+  color: var(--zr-gold-ink);
+}
+
+.menu-btn--gold:hover {
+  filter: brightness(1.08);
+}
+
+.menu-btn--ghost {
+  background: transparent;
+  border-color: var(--zr-line-gold);
+  color: var(--zr-gold-bright);
+}
+
+.menu-btn--ghost:hover {
+  background: var(--zr-gold-wash);
+}
+
+.menu-section {
+  display: block;
+  padding: 16px 18px 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--zr-text-faint);
+}
+
+.app-menu ion-item {
+  --background: transparent;
+  --background-hover: rgba(61, 107, 255, 0.07);
+  --color: var(--zr-text-dim);
+  --min-height: 42px;
+  --padding-start: 18px;
+  --inner-padding-end: 12px;
+  font-size: 0.875rem;
+}
+
+.app-menu ion-item.chat-item--active {
+  --background: var(--zr-gold-wash);
+  --color: var(--zr-gold-bright);
+}
+
+.project-add-icon,
+.signout-icon {
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--zr-text-faint);
+  transition: color 140ms ease;
+}
+
+.project-add-icon:hover,
+.signout-icon:hover {
+  color: var(--zr-gold-bright);
+}
+
+.chat-list-empty {
+  --min-height: 32px;
+  font-size: 0.78rem;
+  color: var(--zr-text-faint);
+}
+
+.menu-footer {
+  border-top: 1px solid var(--zr-line);
+  background: var(--zr-rail);
+}
+
+.menu-footer-item {
+  --background: transparent;
+  --min-height: 58px;
+  font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------- Chat -- */
+
+.zr-toolbar {
+  --background: var(--zr-black);
+  --border-color: var(--zr-line);
+  --color: var(--zr-text);
+  --min-height: 60px;
+}
+
+.zr-toolbar ion-menu-button,
+.zr-toolbar ion-button {
+  --color: var(--zr-text);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.topbar-brand__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--zr-gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-right: 10px;
+  padding: 6px 14px;
+  border-radius: var(--zr-radius-pill);
+  border: 1px solid var(--zr-line-gold);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.78rem;
+  color: var(--zr-text-dim);
+}
+
+.status-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3ddc7f;
+  box-shadow: 0 0 8px rgba(61, 220, 127, 0.7);
+}
+
+.avatar-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-right: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--zr-line-gold);
+  background: transparent;
+  color: var(--zr-gold-bright);
+  cursor: pointer;
+}
+
+.avatar-btn ion-icon {
+  font-size: 19px;
+}
+
+.chat-content {
+  --background: transparent;
+  /* Sits above the fixed arc layer but below the composer. */
+  z-index: 1;
+}
+
+/* Plain block flow. A flex scroll container was collapsing the thread's
+   height, which is what stopped long threads scrolling at all. */
+.chat-content::part(scroll) {
+  padding: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* min-height gives the welcome screen something to centre against without
+   the thread itself ever being height-capped. */
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 14px;
+  min-height: 100%;
+  padding: 24px 22px 12px;
+  box-sizing: border-box;
+}
+
+/* The two gold arcs bleeding in from opposite corners of the chat canvas.
+   Fixed behind the scroller so they don't scroll away with the messages. */
+.chat-canvas-arcs {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.chat-canvas-arcs::before,
+.chat-canvas-arcs::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 200deg,
+    transparent 0deg,
+    rgba(61, 107, 255, 0.42) 30deg,
+    rgba(138, 93, 255, 0.6) 44deg,
+    rgba(23, 201, 255, 0.22) 62deg,
+    transparent 86deg
+  );
+}
+
+.chat-canvas-arcs::before {
+  top: -78%;
+  right: -34%;
+  width: 92%;
+  aspect-ratio: 1;
+  transform: rotate(158deg);
+}
+
+.chat-canvas-arcs::after {
+  bottom: -70%;
+  left: -40%;
+  width: 108%;
+  aspect-ratio: 1;
+}
+
+/* ------------------------------------------------------- Chat: welcome -- */
+
+.welcome {
+  position: relative;
+  z-index: 1;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px 40px;
+}
+
+.welcome__greeting {
+  margin: 34px 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.4vw, 2.05rem);
+  font-weight: 600;
+  color: var(--zr-text);
+}
+
+.welcome__greeting .spark {
+  color: var(--zr-gold-bright);
+}
+
+.welcome__sub {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  color: var(--zr-text-dim);
+}
+
+.welcome__actions {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+  margin-top: 30px;
+}
+
+.welcome__divider {
+  width: 1px;
+  margin: 8px 12px;
+  background: var(--zr-line-gold);
+}
+
+.pill-action {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 24px;
+  border-radius: var(--zr-radius-pill);
+  border: 1px solid var(--zr-line-gold);
+  background: rgba(255, 255, 255, 0.015);
+  color: var(--zr-text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.pill-action:hover {
+  border-color: rgba(61, 107, 255, 0.6);
+  background: var(--zr-gold-wash);
+}
+
+.pill-action ion-icon {
+  font-size: 21px;
+  color: var(--zr-gold-bright);
+}
+
+.pill-action b {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pill-action small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  color: var(--zr-text-faint);
+}
+
+/* ------------------------------------------------------ Chat: messages -- */
+
+.message {
+  position: relative;
+  z-index: 1;
+  display: flex;
+}
+
+.message--user {
+  justify-content: flex-end;
+}
+
+.message--assistant {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.message-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.message-avatar-row__name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--zr-text-dim);
+  letter-spacing: 0.02em;
+}
+
+.message-bubble {
+  max-width: min(68ch, 80%);
+  min-width: 0;
+  padding: 13px 17px;
+  font-size: 0.93rem;
+  line-height: 1.62;
+}
+
+/* pre-wrap keeps the model's paragraph breaks; overflow-wrap stops a long
+   URL or code token from forcing the whole thread to scroll sideways. */
+.message-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.message--user .message-bubble {
+  border-radius: var(--zr-radius-lg) var(--zr-radius-lg) 5px var(--zr-radius-lg);
+  background: var(--zr-gold-gradient);
+  color: var(--zr-gold-ink);
+  font-weight: 500;
+}
+
+.message--assistant .message-bubble {
+  border-radius: var(--zr-radius-lg) var(--zr-radius-lg) var(--zr-radius-lg) 5px;
+  background: var(--zr-raised);
+  border: 1px solid var(--zr-line);
+  color: var(--zr-text);
+}
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--zr-text-dim);
+  font-size: 0.86rem;
+}
+
+.typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--zr-gold);
+  animation: zr-blink 1.3s infinite ease-in-out;
+}
+
+.typing i:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.typing i:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+.typing span {
+  margin-left: 7px;
+}
+
+@keyframes zr-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 0.25;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+/* Blinking caret trailing the text as it streams in. */
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--zr-gold-bright);
+  animation: zr-caret 1s steps(2) infinite;
+}
+
+@keyframes zr-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.message-bubble--failed {
+  border-color: rgba(200, 80, 60, 0.45) !important;
+}
+
+/* Images inside a sent message. */
+.message-shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 6px;
+  margin-bottom: 9px;
+}
+
+.message-shots img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+.thread-error {
+  align-self: center;
+  max-width: 52ch;
+  padding: 11px 15px;
+  border-radius: var(--zr-radius-sm);
+  border: 1px solid rgba(200, 80, 60, 0.4);
+  background: rgba(200, 80, 60, 0.1);
+  color: #f0b8ae;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* Jump-to-latest, shown only once the user has scrolled up. */
+.jump-bottom {
+  position: absolute;
+  right: 18px;
+  bottom: 96px;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--zr-line-gold);
+  background: var(--zr-raised);
+  color: var(--zr-gold-bright);
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.jump-bottom ion-icon {
+  font-size: 19px;
+}
+
+/* ------------------------------------------------------------ Composer -- */
+
+.composer-footer {
+  background: var(--zr-black);
+}
+
+.composer-footer ion-toolbar {
+  --background: var(--zr-black);
+  --border-width: 0;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 8px;
+  /* A fixed value here overrides Ionic's own automatic safe-area padding
+     on ion-toolbar — on a phone with a gesture nav bar, that left the
+     composer sitting right under/behind it. */
+  --padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 7px 7px 10px;
+  border-radius: var(--zr-radius-pill);
+  border: 1px solid var(--zr-line);
+  background: var(--zr-panel);
+}
+
+.composer__input {
+  --background: transparent;
+  --color: var(--zr-text);
+  --placeholder-color: var(--zr-text-faint);
+  --placeholder-opacity: 1;
+  --padding-start: 6px;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.93rem;
+}
+
+.composer__icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--zr-text-dim);
+  cursor: pointer;
+  transition:
+    color 140ms ease,
+    background 140ms ease;
+}
+
+.composer__icon:hover {
+  color: var(--zr-gold-bright);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.composer__icon ion-icon {
+  font-size: 20px;
+}
+
+.composer__icon--outline {
+  border: 1px solid var(--zr-line-gold);
+  color: var(--zr-gold-bright);
+}
+
+.composer__send {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--zr-gold-gradient);
+  color: var(--zr-gold-ink);
+  cursor: pointer;
+  transition:
+    filter 160ms ease,
+    opacity 160ms ease;
+}
+
+.composer__send ion-icon {
+  font-size: 19px;
+}
+
+.composer__send:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.composer__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------- Empty states -- */
+
+.empty-state {
+  position: relative;
+  z-index: 1;
+  margin: auto;
+  max-width: 34ch;
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.empty-state ion-icon {
+  font-size: 34px;
+  color: var(--zr-gold);
+  opacity: 0.75;
+}
+
+.empty-state h2 {
+  margin: 16px 0 6px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.12rem;
+  color: var(--zr-text);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--zr-text-dim);
+}
+
+/* ----------------------------------------------------- Simple sections -- */
+
+.panel-page {
+  --background: var(--zr-black);
+}
+
+.settings-group {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 22px 18px;
+}
+
+.settings-group h3 {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--zr-text-faint);
+}
+
+.settings-card {
+  border: 1px solid var(--zr-line);
+  border-radius: var(--zr-radius);
+  background: var(--zr-panel);
+  overflow: hidden;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 17px;
+  font-size: 0.9rem;
+  color: var(--zr-text);
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--zr-line);
+}
+
+.settings-row span {
+  color: var(--zr-text-dim);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-row button {
+  border: 1px solid var(--zr-line-gold);
+  border-radius: var(--zr-radius-sm);
+  background: transparent;
+  color: var(--zr-gold-bright);
+  padding: 8px 15px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.settings-row button:hover {
+  background: var(--zr-gold-wash);
+}
+
+/* --------------------------------------------------------- Breakpoints -- */
+
+@media (max-width: 620px) {
+  .welcome .zorah-logo--full {
+    transform: scale(0.78);
+    margin-bottom: -14px; /* pull the greeting up to close the gap the scale-down leaves */
+  }
+
+  .welcome {
+    padding: 12px 14px 24px;
+  }
+
+  .welcome__greeting {
+    margin: 18px 0 8px;
+  }
+
+  .welcome__sub {
+    max-width: 30ch;
+  }
+
+  .welcome__actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .welcome__divider {
+    display: none;
+  }
+
+  .pill-action {
+    justify-content: center;
+  }
+
+  .status-pill {
+    display: none;
+  }
+
+  .message-bubble {
+    max-width: 88%;
+  }
+}
+
+/* ------------------------------------------------- Composer additions -- */
+
+/* Attachment tray above the composer. */
+.tray {
+  display: flex;
+  gap: 8px;
+  padding: 0 4px 9px;
+  overflow-x: auto;
+}
+
+.tray__item {
+  position: relative;
+  flex: 0 0 auto;
+  width: 62px;
+  height: 62px;
+  border-radius: 12px;
+  border: 1px solid var(--zr-line-gold);
+  overflow: hidden;
+  background: var(--zr-raised);
+}
+
+.tray__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tray__item--busy {
+  display: grid;
+  place-items: center;
+  color: var(--zr-gold);
+}
+
+.tray__item button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  cursor: pointer;
+}
+
+.tray__item button ion-icon {
+  font-size: 13px;
+}
+
+/* Live recording strip. */
+.rec-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 4px 9px;
+  padding: 9px 14px;
+  border-radius: var(--zr-radius-pill);
+  border: 1px solid var(--zr-line-gold);
+  background: var(--zr-gold-wash);
+  font-size: 0.82rem;
+  color: var(--zr-text);
+}
+
+.rec-bar__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e2584a;
+  animation: zr-pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes zr-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.rec-bar em {
+  flex: 1;
+  min-width: 0;
+  font-style: normal;
+  color: var(--zr-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rec-bar button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--zr-gold-bright);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rec-error {
+  margin: 0 8px 9px;
+  font-size: 0.8rem;
+  color: #e79b8f;
+}
+
+.composer--recording {
+  border-color: rgba(226, 88, 74, 0.5);
+}
+
+.composer__icon--live {
+  color: #e2584a !important;
+  background: rgba(226, 88, 74, 0.12) !important;
+}
+
+.composer__icon:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* autoGrow textarea, capped so it can't eat the whole screen. */
+.composer__input {
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.composer__send--stop {
+  background: var(--zr-raised);
+  border: 1px solid var(--zr-line-gold);
+  color: var(--zr-gold-bright);
+}
+/* --------------------------------------------------- Message additions -- */
+
+/* Reuses the same hover pattern as .project-add-icon / .signout-icon. */
+.chat-delete-icon {
+  cursor: pointer;
+  font-size: 17px;
+  color: var(--zr-text-faint);
+  opacity: 0;
+  transition:
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+.app-menu ion-item:hover .chat-delete-icon,
+ion-item:hover .chat-delete-icon {
+  opacity: 1;
+}
+
+.chat-delete-icon:hover {
+  color: #e2584a;
+}
+
+/* Copy / Share row under a completed message. */
+.message-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.message--user .message-actions {
+  border-top-color: rgba(0, 0, 0, 0.12);
+}
+
+.message-actions__btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: var(--zr-radius-sm);
+  background: transparent;
+  color: inherit;
+  opacity: 0.68;
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    opacity 140ms ease,
+    background 140ms ease;
+}
+
+.message-actions__btn ion-icon {
+  font-size: 14px;
+}
+
+.message-actions__btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.message--user .message-actions__btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Follow-up suggestion chips under the latest assistant reply. */
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 10px 2px 0 2px;
+  max-width: min(68ch, 92%);
+}
+
+.suggestions__chip {
+  padding: 9px 14px;
+  border-radius: var(--zr-radius-pill);
+  border: 1px solid var(--zr-line-gold);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--zr-gold-bright);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.suggestions__chip:hover {
+  border-color: rgba(61, 107, 255, 0.6);
+  background: var(--zr-gold-wash);
+}
+
+/* -------------------------------------------------------- Markdown body -- */
+/* Rendered AI/user text via react-markdown. Spacing is intentionally
+   tighter than a typical article — this sits inside a chat bubble, not a
+   document. */
+
+.markdown-body > *:first-child {
+  margin-top: 0;
+}
+.markdown-body > *:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-body p {
+  margin: 0 0 0.7em;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin: 0.9em 0 0.4em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdown-body h1 {
+  font-size: 1.28em;
+}
+.markdown-body h2 {
+  font-size: 1.16em;
+}
+.markdown-body h3 {
+  font-size: 1.06em;
+}
+.markdown-body h4 {
+  font-size: 1em;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 0.7em;
+  padding-left: 1.35em;
+}
+
+.markdown-body li {
+  margin: 0.22em 0;
+}
+
+.markdown-body li > p {
+  margin: 0;
+}
+
+.markdown-body a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-underline-offset: 2px;
+  opacity: 0.92;
+}
+
+.markdown-body strong {
+  font-weight: 700;
+}
+
+.markdown-body blockquote {
+  margin: 0 0 0.7em;
+  padding: 2px 0 2px 12px;
+  border-left: 3px solid var(--zr-line-gold);
+  color: inherit;
+  opacity: 0.85;
+}
+
+.markdown-body hr {
+  margin: 0.9em 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.message--user .markdown-body hr {
+  border-top-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Inline code. */
+.markdown-body code {
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.87em;
+}
+
+.message--user .markdown-body code {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* Code blocks: the inline-code background rule above still applies to the
+   <code> inside <pre>, so it's unset here and the block itself carries the
+   background instead. */
+.markdown-body pre {
+  margin: 0 0 0.7em;
+  padding: 12px 14px;
+  border-radius: var(--zr-radius-sm);
+  background: rgba(0, 0, 0, 0.32);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.message--user .markdown-body pre {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.84em;
+  line-height: 1.55;
+  white-space: pre;
+}
+
+/* GFM tables. */
+.markdown-body table {
+  width: 100%;
+  margin: 0 0 0.7em;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  text-align: left;
+}
+
+.message--user .markdown-body th,
+.message--user .markdown-body td {
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+.markdown-body th {
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+}

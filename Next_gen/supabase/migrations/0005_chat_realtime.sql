@@ -1,0 +1,21 @@
+-- =========================================================================
+-- Hello J — Realtime publication changes for chat upgrades.
+--
+-- Deliberately isolated from 0004_chat_upgrades.sql. ALTER PUBLICATION
+-- takes locks that Supabase's Realtime service also touches in the
+-- background as it refreshes its own subscription — running these
+-- alongside other DDL on the same tables (new columns, new triggers) in
+-- one transaction is a common way to hit:
+--   ERROR: 40P01: deadlock detected
+-- Run this file on its own, after 0004 has applied successfully.
+--
+-- If this still deadlocks: it's almost always transient contention with
+-- Realtime's background listener, not a real logical conflict — Postgres
+-- picks one side as the "victim" and rolls it back automatically, so
+-- simply re-running this file a second time resolves it in the vast
+-- majority of cases. If it keeps failing, briefly disabling the Realtime
+-- publication sync for this project (Database → Replication) before
+-- running, then re-enabling after, avoids the contention entirely.
+-- =========================================================================
+alter publication supabase_realtime add table public.message_receipts;
+alter publication supabase_realtime add table public.conversations;
