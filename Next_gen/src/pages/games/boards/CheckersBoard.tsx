@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { CheckersState, CheckersMove } from '@/lib/games/checkers';
+import '@/pages/games/games.css';
 
 interface Props {
   board: CheckersState;
@@ -37,7 +38,7 @@ const CheckersBoard: React.FC<Props> = ({ board, legalMoves, disabled, onMove })
   return (
     <div style={{
       maxWidth: 360, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)',
-      border: '3px solid #3a2a1a', borderRadius: 8, overflow: 'hidden',
+      border: '3px solid #2b1c10', borderRadius: 8, overflow: 'hidden',
     }}
     >
       {board.map((row, r) => row.map((piece, c) => {
@@ -50,23 +51,24 @@ const CheckersBoard: React.FC<Props> = ({ board, legalMoves, disabled, onMove })
             key={`${r}-${c}`}
             onClick={() => handleClick(r, c)}
             style={{
-              aspectRatio: '1', background: dark ? '#7a4b2e' : '#e8d4b8',
+              aspectRatio: '1', background: dark ? '#7a4b2e' : '#f1dfc2',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative', cursor: canSelect || isDest ? 'pointer' : 'default',
-              outline: isSelected ? '3px solid var(--ng-blue)' : 'none',
+              outline: isSelected ? '4px solid #00E0FF' : 'none', outlineOffset: '-4px',
             }}
           >
             {isDest && (
-              <div style={{ position: 'absolute', width: '30%', height: '30%', borderRadius: '50%', background: 'rgba(58,150,255,0.6)' }} />
+              <div style={{ position: 'absolute', width: '30%', height: '30%', borderRadius: '50%', background: '#00E0FF', border: '2px solid #003C4D' }} />
             )}
             {piece && (
               <div
                 style={{
                   width: '76%', height: '76%', borderRadius: '50%',
-                  background: piece.toLowerCase() === 'r' ? '#E4483A' : '#222',
-                  border: canSelect ? '3px solid var(--ng-blue)' : '3px solid rgba(255,255,255,0.25)',
+                  background: piece.toLowerCase() === 'r' ? '#E53935' : '#17171c',
+                  border: canSelect ? '3px solid #00E0FF' : '3px solid #f4f4f6',
+                  boxShadow: '0 2px 3px rgba(0,0,0,0.5)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#F4B400', fontWeight: 800, fontSize: 14,
+                  color: '#FFD21F', fontWeight: 900, fontSize: 15,
                 }}
               >
                 {(piece === 'R' || piece === 'B') && 'K'}

@@ -34,11 +34,19 @@ const PATHS: Record<PieceType, string> = {
 };
 
 export const ChessPiece: React.FC<ChessPieceProps> = ({ type, color, size = 30 }) => {
-  const fill = color === 'w' ? '#f5f5f0' : '#2a2a2e';
-  const stroke = color === 'w' ? '#3a3a3a' : '#0a0a0a';
+  // White: pure white with a heavy dark outline (readable on the light squares). Black: near-black with a
+  // thin light halo (readable on the dark squares). Contrast holds on both square colours.
+  const fill = color === 'w' ? '#ffffff' : '#16161a';
+  const stroke = color === 'w' ? '#1a1a1a' : '#000000';
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true">
-      <path d={PATHS[type]} fill={fill} stroke={stroke} strokeWidth={0.7} strokeLinejoin="round" />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      style={{ filter: color === 'b' ? 'drop-shadow(0 0 1px rgba(255,255,255,0.95))' : 'drop-shadow(0 0 0.5px rgba(0,0,0,0.6))' }}
+    >
+      <path d={PATHS[type]} fill={fill} stroke={stroke} strokeWidth={color === 'w' ? 1.15 : 0.8} strokeLinejoin="round" />
     </svg>
   );
 };

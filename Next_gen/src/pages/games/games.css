@@ -1,0 +1,52 @@
+/*
+ * Colours shared by every game board. Each value is chosen to keep strong contrast against its own
+ * background in BOTH themes (dark is the app's default; light follows the phone's light setting).
+ *   --gm-panel / --gm-border : cards and board backgrounds
+ *   --gm-text / --gm-muted    : primary and secondary text (>= 4.5:1 on the panel)
+ *   --gm-x / --gm-o           : the two Tic-Tac-Toe marks, clearly different from each other
+ *   --gm-accent               : selections, user-entered digits, highlights
+ *   --gm-conflict / --gm-win  : mistakes and success
+ */
+:root {
+  --gm-panel: #1c1838;
+  --gm-panel-2: #2a2552;
+  --gm-border: rgba(170, 150, 255, 0.45);
+  --gm-text: #f5f3ff;
+  --gm-muted: #c3bce6;
+  --gm-x: #7fb0ff;
+  --gm-o: #ffcc33;
+  --gm-accent: #8fb0ff;
+  --gm-accent-bg: rgba(143, 176, 255, 0.34);
+  --gm-accent-bg-soft: rgba(143, 176, 255, 0.14);
+  --gm-conflict: #ff8a93;
+  --gm-win: #3ee08f;
+  --gm-win-bg: rgba(62, 224, 143, 0.28);
+  --gm-grid-line: rgba(200, 190, 255, 0.4);
+  --gm-grid-strong: #f5f3ff;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --gm-panel: #ffffff;
+    --gm-panel-2: #ece8fa;
+    --gm-border: #9f94c9;
+    --gm-text: #1d1833;
+    --gm-muted: #51496f;
+    --gm-x: #1d4ed8;
+    --gm-o: #b45309;
+    --gm-accent: #2447d6;
+    --gm-accent-bg: rgba(36, 71, 214, 0.26);
+    --gm-accent-bg-soft: rgba(36, 71, 214, 0.1);
+    --gm-conflict: #c62828;
+    --gm-win: #0b7a45;
+    --gm-win-bg: rgba(11, 122, 69, 0.25);
+    --gm-grid-line: #a79dcc;
+    --gm-grid-strong: #1d1833;
+  }
+}
+
+.gm-card {
+  background: var(--gm-panel);
+  border: 1px solid var(--gm-border);
+  color: var(--gm-text);
+}

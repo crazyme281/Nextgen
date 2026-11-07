@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Square } from 'chess.js';
 import { chessLegalMovesFrom, type ChessFen } from '@/lib/games/chessEngine';
 import { ChessPiece } from './ChessPiece';
+import '@/pages/games/games.css';
 
 interface Props {
   fen: ChessFen;
@@ -41,7 +42,7 @@ const ChessBoard: React.FC<Props> = ({ fen, board, turn, disabled, onMove }) => 
   return (
     <div style={{
       maxWidth: 360, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)',
-      border: '3px solid #2a2a2a', borderRadius: 8, overflow: 'hidden',
+      border: '3px solid #2b1c10', borderRadius: 8, overflow: 'hidden',
     }}
     >
       {board.map((row, r) => row.map((piece, c) => {
@@ -54,14 +55,14 @@ const ChessBoard: React.FC<Props> = ({ fen, board, turn, disabled, onMove }) => 
             key={sq}
             onClick={() => handleClick(r, c)}
             style={{
-              aspectRatio: '1', background: dark ? '#7a8a9a' : '#eef1f5',
+              aspectRatio: '1', background: dark ? '#b58863' : '#f0d9b5',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               position: 'relative', fontSize: 30, cursor: disabled ? 'default' : 'pointer',
-              outline: isSelected ? '3px solid var(--ng-blue)' : 'none',
+              outline: isSelected ? '4px solid #00B8D9' : 'none', outlineOffset: '-4px',
             }}
           >
             {isDest && (
-              <div style={{ position: 'absolute', width: '28%', height: '28%', borderRadius: '50%', background: 'rgba(58,150,255,0.55)' }} />
+              <div style={{ position: 'absolute', width: '28%', height: '28%', borderRadius: '50%', background: '#00B8D9', border: '2px solid #00323D' }} />
             )}
             {piece && <ChessPiece type={piece.type as 'p' | 'n' | 'b' | 'r' | 'q' | 'k'} color={piece.color} size={34} />}
           </div>

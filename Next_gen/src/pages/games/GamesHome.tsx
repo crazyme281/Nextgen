@@ -14,6 +14,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import TrustBadge from '@/components/TrustBadge';
 import { acceptGameInvitation, declineGameInvitation } from '@/lib/gameInvitations';
+import '@/pages/games/games.css';
 
 const IMPLEMENTED_GAME_KEYS = ['tic_tac_toe', 'connect_four', 'checkers', 'chess', 'sudoku', 'word_search'];
 
@@ -201,21 +202,21 @@ const GamesHome: React.FC = () => {
       <IonContent fullscreen className="ion-padding">
 
         {/* Featured */}
-        <h3 style={{ marginTop: 0 }}>Featured Games</h3>
+        <h3 style={{ marginTop: 0, color: 'var(--gm-text)' }}>Featured Games</h3>
         <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
           {featuredGames.slice(0, 6).map((g) => (
             <div
               key={g.id}
               onClick={() => startQuickPlay(g)}
               style={{
-                minWidth: 140, background: 'var(--ion-item-background)', borderRadius: 16,
+                minWidth: 140, background: 'var(--gm-panel)', border: '1px solid var(--gm-border)', color: 'var(--gm-text)', borderRadius: 16,
                 padding: 16, flexShrink: 0, cursor: 'pointer', position: 'relative',
               }}
             >
               {!IMPLEMENTED_GAME_KEYS.includes(g.key) && (
                 <div style={{
                   position: 'absolute', top: 8, right: 8, fontSize: 9, fontWeight: 700,
-                  background: 'rgba(0,0,0,0.35)', color: '#fff', borderRadius: 6, padding: '2px 6px',
+                  background: '#3b3470', color: '#fff', borderRadius: 6, padding: '2px 6px',
                 }}
                 >
                   SOON
@@ -223,7 +224,7 @@ const GamesHome: React.FC = () => {
               )}
               <div style={{ fontSize: 30 }}>{g.icon}</div>
               <div style={{ fontWeight: 700, marginTop: 8 }}>{g.name}</div>
-              <div style={{ fontSize: 12, color: 'var(--ion-color-medium)' }}>
+              <div style={{ fontSize: 12, color: 'var(--gm-muted)' }}>
                 {g.supports_ai ? 'PvP · AI' : 'PvP'}
               </div>
             </div>
@@ -238,28 +239,28 @@ const GamesHome: React.FC = () => {
               key={g.id}
               onClick={() => startQuickPlay(g)}
               style={{
-                background: 'var(--ion-item-background)', borderRadius: 14, padding: '12px 4px',
+                background: 'var(--gm-panel)', border: '1px solid var(--gm-border)', color: 'var(--gm-text)', borderRadius: 14, padding: '12px 4px',
                 textAlign: 'center', cursor: 'pointer', position: 'relative',
               }}
             >
               {!IMPLEMENTED_GAME_KEYS.includes(g.key) && (
                 <div style={{
                   position: 'absolute', top: 4, right: 4, fontSize: 7, fontWeight: 700,
-                  background: 'rgba(0,0,0,0.35)', color: '#fff', borderRadius: 4, padding: '1px 4px',
+                  background: '#3b3470', color: '#fff', borderRadius: 4, padding: '1px 4px',
                 }}
                 >
                   SOON
                 </div>
               )}
               <div style={{ fontSize: 22 }}>{g.icon}</div>
-              <div style={{ fontSize: 10, marginTop: 4 }}>{g.name}</div>
+              <div style={{ fontSize: 11, fontWeight: 600, marginTop: 4 }}>{g.name}</div>
             </div>
           ))}
         </div>
 
         {/* Play with friends */}
         <h3>Play With Friends</h3>
-        <p style={{ color: 'var(--ion-color-medium)', fontSize: 13, marginTop: -6 }}>
+        <p style={{ color: 'var(--gm-muted)', fontSize: 13, marginTop: -6 }}>
           Pick a game above, then invite a Next Gen contact.
         </p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -273,11 +274,11 @@ const GamesHome: React.FC = () => {
         {/* Invitations */}
         <h3>Invitations</h3>
         {invitations.length === 0 && (
-          <p style={{ color: 'var(--ion-color-medium)', fontSize: 13 }}>No pending invitations.</p>
+          <p style={{ color: 'var(--gm-muted)', fontSize: 13 }}>No pending invitations.</p>
         )}
         <IonList lines="none">
           {invitations.map((inv) => (
-            <IonItem key={inv.id} style={{ '--background': 'var(--ion-item-background)', borderRadius: 12, marginBottom: 8 }}>
+            <IonItem key={inv.id} style={{ '--background': 'var(--gm-panel)', '--color': 'var(--gm-text)', border: '1px solid var(--gm-border)', borderRadius: 12, marginBottom: 8 }}>
               <IonIcon icon={mailOutline} slot="start" />
               <IonLabel>
                 <h2>{gameById(inv.game_id)?.name ?? 'Game'} invitation</h2>
@@ -292,13 +293,13 @@ const GamesHome: React.FC = () => {
         {/* Active matches */}
         <h3>Active Matches</h3>
         {activeMatches.length === 0 && (
-          <p style={{ color: 'var(--ion-color-medium)', fontSize: 13 }}>No matches in progress.</p>
+          <p style={{ color: 'var(--gm-muted)', fontSize: 13 }}>No matches in progress.</p>
         )}
         <IonList lines="none">
           {activeMatches.map((m) => {
             const game = gameById(m.game_id);
             return (
-              <IonItem key={m.id} style={{ '--background': 'var(--ion-item-background)', borderRadius: 12, marginBottom: 8 }}>
+              <IonItem key={m.id} style={{ '--background': 'var(--gm-panel)', '--color': 'var(--gm-text)', border: '1px solid var(--gm-border)', borderRadius: 12, marginBottom: 8 }}>
                 <IonLabel>
                   <h2>{game?.name ?? 'Game'}</h2>
                   <p>In progress</p>
@@ -319,11 +320,11 @@ const GamesHome: React.FC = () => {
         {/* Recent games */}
         <h3>Recent Games</h3>
         {recentMatches.length === 0 && (
-          <p style={{ color: 'var(--ion-color-medium)', fontSize: 13 }}>No completed matches yet.</p>
+          <p style={{ color: 'var(--gm-muted)', fontSize: 13 }}>No completed matches yet.</p>
         )}
         <IonList lines="none">
           {recentMatches.map((m) => (
-            <IonItem key={m.id} style={{ '--background': 'var(--ion-item-background)', borderRadius: 12, marginBottom: 8 }}>
+            <IonItem key={m.id} style={{ '--background': 'var(--gm-panel)', '--color': 'var(--gm-text)', border: '1px solid var(--gm-border)', borderRadius: 12, marginBottom: 8 }}>
               <IonIcon icon={timeOutline} slot="start" />
               <IonLabel>
                 <h2>{gameById(m.game_id)?.name ?? 'Game'}</h2>
@@ -336,16 +337,16 @@ const GamesHome: React.FC = () => {
         {/* Leaderboard */}
         <h3><IonIcon icon={trophyOutline} style={{ verticalAlign: 'middle', marginRight: 6 }} />Leaderboard</h3>
         {leaderboard.length === 0 && (
-          <p style={{ color: 'var(--ion-color-medium)', fontSize: 13 }}>No ranked players yet.</p>
+          <p style={{ color: 'var(--gm-muted)', fontSize: 13 }}>No ranked players yet.</p>
         )}
         <IonList lines="none">
           {leaderboard.map((row, i) => (
-            <IonItem key={`${row.user_id}-${row.game_id}`} style={{ '--background': 'var(--ion-item-background)', borderRadius: 12, marginBottom: 8 }}>
+            <IonItem key={`${row.user_id}-${row.game_id}`} style={{ '--background': 'var(--gm-panel)', '--color': 'var(--gm-text)', border: '1px solid var(--gm-border)', borderRadius: 12, marginBottom: 8 }}>
               <div slot="start" style={{ fontWeight: 700, width: 20 }}>{i + 1}</div>
               <IonLabel>
                 <h2>{gameById(row.game_id)?.name ?? 'Game'}</h2>
               </IonLabel>
-              <div slot="end" style={{ fontWeight: 700, color: 'var(--ng-blue-2)' }}>{row.rating}</div>
+              <div slot="end" style={{ fontWeight: 700, color: 'var(--gm-accent)' }}>{row.rating}</div>
             </IonItem>
           ))}
         </IonList>
@@ -353,14 +354,14 @@ const GamesHome: React.FC = () => {
         {/* My stats */}
         <h3><IonIcon icon={statsChartOutline} style={{ verticalAlign: 'middle', marginRight: 6 }} />My Game Statistics</h3>
         <div style={{
-          background: 'var(--ion-item-background)', borderRadius: 16, padding: 16,
+          background: 'var(--gm-panel)', border: '1px solid var(--gm-border)', color: 'var(--gm-text)', borderRadius: 16, padding: 16,
           display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, textAlign: 'center',
         }}
         >
-          <div><div style={{ fontSize: 20, fontWeight: 700 }}>{stats?.games_played ?? 0}</div><div style={{ fontSize: 11, color: 'var(--ion-color-medium)' }}>Played</div></div>
-          <div><div style={{ fontSize: 20, fontWeight: 700, color: 'var(--ng-verified-green)' }}>{stats?.wins ?? 0}</div><div style={{ fontSize: 11, color: 'var(--ion-color-medium)' }}>Wins</div></div>
-          <div><div style={{ fontSize: 20, fontWeight: 700, color: 'var(--ng-security-red)' }}>{stats?.losses ?? 0}</div><div style={{ fontSize: 11, color: 'var(--ion-color-medium)' }}>Losses</div></div>
-          <div><div style={{ fontSize: 20, fontWeight: 700 }}>{stats?.win_percentage ?? 0}%</div><div style={{ fontSize: 11, color: 'var(--ion-color-medium)' }}>Win rate</div></div>
+          <div><div style={{ fontSize: 20, fontWeight: 700 }}>{stats?.games_played ?? 0}</div><div style={{ fontSize: 11, color: 'var(--gm-muted)' }}>Played</div></div>
+          <div><div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gm-win)' }}>{stats?.wins ?? 0}</div><div style={{ fontSize: 11, color: 'var(--gm-muted)' }}>Wins</div></div>
+          <div><div style={{ fontSize: 20, fontWeight: 700, color: 'var(--gm-conflict)' }}>{stats?.losses ?? 0}</div><div style={{ fontSize: 11, color: 'var(--gm-muted)' }}>Losses</div></div>
+          <div><div style={{ fontSize: 20, fontWeight: 700 }}>{stats?.win_percentage ?? 0}%</div><div style={{ fontSize: 11, color: 'var(--gm-muted)' }}>Win rate</div></div>
         </div>
 
         {/* Invite modal */}
@@ -388,7 +389,7 @@ const GamesHome: React.FC = () => {
               ))}
             </IonList>
             {contacts.length === 0 && (
-              <p style={{ color: 'var(--ion-color-medium)' }}>
+              <p style={{ color: 'var(--gm-muted)' }}>
                 No contacts yet. Add a Next Gen contact first, or share the app with someone by email from Chats.
               </p>
             )}

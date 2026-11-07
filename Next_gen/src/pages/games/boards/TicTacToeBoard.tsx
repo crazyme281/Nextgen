@@ -1,6 +1,7 @@
 import React from 'react';
 import type { TttState } from '@/lib/games/tictactoe';
 import { tttWinner } from '@/lib/games/tictactoe';
+import '@/pages/games/games.css';
 
 interface Props {
   board: TttState;
@@ -23,9 +24,10 @@ const TicTacToeBoard: React.FC<Props> = ({ board, disabled, onPlay }) => {
           onClick={() => onPlay(i)}
           disabled={disabled || cell !== null}
           style={{
-            aspectRatio: '1', fontSize: 40, fontWeight: 800, borderRadius: 14, border: 'none',
-            background: line?.includes(i) ? 'var(--ng-verified-green)' : 'var(--ion-item-background)',
-            color: cell === 'X' ? 'var(--ng-blue)' : '#F4B400',
+            aspectRatio: '1', fontSize: 46, fontWeight: 900, borderRadius: 14,
+            border: line?.includes(i) ? '2px solid var(--gm-win)' : '2px solid var(--gm-border)',
+            background: line?.includes(i) ? 'var(--gm-win-bg)' : 'var(--gm-panel)',
+            color: cell === 'X' ? 'var(--gm-x)' : 'var(--gm-o)',
             cursor: disabled || cell !== null ? 'default' : 'pointer',
           }}
         >

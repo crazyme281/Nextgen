@@ -4,13 +4,14 @@ import {
   IonInput, IonToast, IonSpinner, IonActionSheet,
 } from '@ionic/react';
 import {
-  close, checkmark, personCircleOutline, chevronDown,
+  close, checkmark, personCircleOutline, chevronDown, peopleOutline,
 } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import BrandMark from '@/components/BrandMark';
 import { tr } from '@/i18n';
+import { findNextgenUser } from '@/lib/phoneContacts';
 
 type ExtraFieldKey =
   | 'phonetic_name' | 'address' | 'nickname' | 'website'
@@ -65,31 +66,43 @@ const AddContact: React.FC = () => {
   const handleSave = async () => {
     if (!user) return;
     const cleanMobile = mobile.trim();
-    if (!name.trim() && !cleanMobile) {
-      setToast(tr('Add at least a name or phone number.'));
+    const cleanEmail = workEmail.trim();
+    // An email OR a phone number is enough — you don't need both.
+    if (!cleanEmail && !cleanMobile) {
+      setToast(tr('Add their email address or phone number.'));
+      return;
+    }
+    if (cleanEmail && !/^\S+@\S+\.\S+$/.test(cleanEmail)) {
+      setToast(tr('That email address doesn\'t look right.'));
       return;
     }
 
     setSaving(true);
 
     let contactUserId: string | null = null;
-    if (cleanMobile) {
-      const { data: matchedUser } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('phone', cleanMobile)
-        .maybeSingle();
-      if (matchedUser) contactUserId = matchedUser.id;
+    let accountName: string | null = null;
+    try {
+      const match = await findNextgenUser({ email: cleanEmail, phone: cleanMobile });
+      if (match) {
+        contactUserId = match.id;
+        accountName = match.full_name;
+      }
+    } catch {
+      setSaving(false);
+      setToast(tr('Couldn\'t look that up. Check your connection and try again.'));
+      return;
     }
 
     if (!contactUserId) {
       setSaving(false);
-      setToast(tr('No Nextgen user found with that phone number yet.'));
+      setToast(cleanEmail
+        ? tr('No Nextgen user found with that email yet.')
+        : tr('No Nextgen user found with that phone number yet.'));
       return;
     }
     if (contactUserId === user.id) {
       setSaving(false);
-      setToast(tr('That\'s your own number.'));
+      setToast(tr('That\'s your own account.'));
       return;
     }
 
@@ -102,10 +115,12 @@ const AddContact: React.FC = () => {
       if (val) details[key] = val;
     });
 
+    // The database adds you to THEIR contacts automatically (mirror_contact_insert trigger), so nobody has to
+    // add anyone twice. With no name typed, their own Nextgen name is shown.
     const { error } = await supabase.from('contacts').insert({
       owner_id: user.id,
       contact_user_id: contactUserId,
-      display_name: name.trim() || null,
+      display_name: name.trim() || accountName || null,
       details,
     });
 
@@ -151,6 +166,18 @@ const AddContact: React.FC = () => {
               icon={personCircleOutline}
               style={{ fontSize: 84, color: 'var(--ion-color-medium)' }}
             />
+          </div>
+
+          {/* Pull people straight from the phone's address book (asks for permission first) */}
+          <div
+            onClick={() => history.push('/chats/phone-contacts')}
+            style={{
+              background: 'var(--ion-item-background)', borderRadius: 14, padding: '12px 16px', marginBottom: 12,
+              display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer', color: 'var(--ion-color-primary)',
+            }}
+          >
+            <IonIcon icon={peopleOutline} style={{ fontSize: 22 }} />
+            <span style={{ fontWeight: 600 }}>{tr('Import from phone contacts')}</span>
           </div>
 
           {/* Name */}
@@ -199,7 +226,7 @@ const AddContact: React.FC = () => {
           >
             <span style={{ fontWeight: 600, minWidth: 64 }}>{tr('Mobile')}</span>
             <IonInput
-              placeholder={tr('Phone')}
+              placeholder={tr('Phone (optional)')}
               type="tel"
               value={mobile}
               onIonInput={(e) => setMobile(e.detail.value ?? '')}
@@ -214,14 +241,18 @@ const AddContact: React.FC = () => {
             display: 'flex', alignItems: 'center', gap: 12,
           }}
           >
-            <span style={{ fontWeight: 600, minWidth: 64 }}>{tr('Work')}</span>
+            <span style={{ fontWeight: 600, minWidth: 64 }}>{tr('Email')}</span>
             <IonInput
-              placeholder={tr('Email')}
+              placeholder={tr('Email address')}
               type="email"
               value={workEmail}
               onIonInput={(e) => setWorkEmail(e.detail.value ?? '')}
               style={{ '--padding-start': '0' } as React.CSSProperties}
             />
+          </div>
+
+          <div style={{ fontSize: 12, opacity: 0.65, margin: '-8px 4px 14px' }}>
+            {tr('Their email is enough — you don\'t need their phone number. They\'re added to your contacts, and you to theirs.')}
           </div>
 
           {/* Dynamically added extra fields */}

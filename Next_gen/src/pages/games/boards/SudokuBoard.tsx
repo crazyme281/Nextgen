@@ -5,6 +5,7 @@ import {
   generateSudoku, isValidPlacement, isSudokuComplete,
   type SudokuGrid, type Difficulty,
 } from '@/lib/games/sudoku';
+import '@/pages/games/games.css';
 
 const DIGITS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -57,10 +58,11 @@ const SudokuBoard: React.FC = () => {
             key={d}
             onClick={() => { setDifficulty(d); newGame(d); }}
             style={{
-              padding: '6px 14px', borderRadius: 999, border: 'none', fontSize: 12, fontWeight: 700,
+              padding: '7px 16px', borderRadius: 999, fontSize: 13, fontWeight: 700,
               textTransform: 'capitalize', cursor: 'pointer',
-              background: d === difficulty ? 'var(--ng-blue)' : 'var(--ion-item-background)',
-              color: d === difficulty ? '#fff' : 'var(--ion-text-color)',
+              border: d === difficulty ? '2px solid var(--gm-accent)' : '2px solid var(--gm-border)',
+              background: d === difficulty ? 'var(--gm-accent)' : 'var(--gm-panel)',
+              color: d === difficulty ? '#fff' : 'var(--gm-text)',
             }}
           >
             {d}
@@ -71,7 +73,7 @@ const SudokuBoard: React.FC = () => {
       <div
         style={{
           display: 'grid', gridTemplateColumns: 'repeat(9, 1fr)', width: '100%', maxWidth: 360,
-          border: '2px solid var(--ion-text-color)', borderRadius: 8, overflow: 'hidden',
+          border: '2px solid var(--gm-grid-strong)', borderRadius: 8, overflow: 'hidden', background: 'var(--gm-panel)',
         }}
       >
         {grid.map((row, r) => row.map((val, c) => {
@@ -85,15 +87,15 @@ const SudokuBoard: React.FC = () => {
               onClick={() => !won && setSelected([r, c])}
               style={{
                 aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 16, fontWeight: isGiven ? 700 : 500, cursor: won ? 'default' : 'pointer',
+                fontSize: 18, fontWeight: isGiven ? 800 : 700, cursor: won ? 'default' : 'pointer',
                 background: isSelected
-                  ? 'rgba(61,107,255,0.35)'
+                  ? 'var(--gm-accent-bg)'
                   : sameRowCol
-                    ? 'rgba(61,107,255,0.1)'
-                    : 'var(--ion-background-color)',
-                color: isConflict ? '#ff5566' : isGiven ? 'var(--ion-text-color)' : 'var(--ng-blue-2, var(--ng-blue))',
-                borderRight: (c + 1) % 3 === 0 && c !== 8 ? '2px solid var(--ion-text-color)' : '1px solid var(--ion-border-color)',
-                borderBottom: (r + 1) % 3 === 0 && r !== 8 ? '2px solid var(--ion-text-color)' : '1px solid var(--ion-border-color)',
+                    ? 'var(--gm-accent-bg-soft)'
+                    : 'var(--gm-panel)',
+                color: isConflict ? 'var(--gm-conflict)' : isGiven ? 'var(--gm-text)' : 'var(--gm-accent)',
+                borderRight: (c + 1) % 3 === 0 && c !== 8 ? '2px solid var(--gm-grid-strong)' : '1px solid var(--gm-grid-line)',
+                borderBottom: (r + 1) % 3 === 0 && r !== 8 ? '2px solid var(--gm-grid-strong)' : '1px solid var(--gm-grid-line)',
               }}
             >
               {val ?? ''}
@@ -104,7 +106,7 @@ const SudokuBoard: React.FC = () => {
 
       {won ? (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 12, color: 'var(--ng-verified-green)' }}>
+          <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 12, color: 'var(--gm-win)' }}>
             <IonIcon icon={checkmarkCircle} style={{ verticalAlign: 'middle', marginRight: 6 }} />
             Solved it!
           </div>
@@ -127,9 +129,9 @@ const SudokuBoard: React.FC = () => {
                 onClick={() => placeDigit(d)}
                 disabled={!selected}
                 style={{
-                  padding: '10px 0', borderRadius: 10, border: 'none', fontSize: 17, fontWeight: 700,
-                  background: 'var(--ion-item-background)', color: 'var(--ion-text-color)',
-                  cursor: selected ? 'pointer' : 'default', opacity: selected ? 1 : 0.5,
+                  padding: '11px 0', borderRadius: 10, border: '2px solid var(--gm-border)', fontSize: 18, fontWeight: 800,
+                  background: 'var(--gm-panel)', color: 'var(--gm-text)',
+                  cursor: selected ? 'pointer' : 'default', opacity: selected ? 1 : 0.6,
                 }}
               >
                 {d}
@@ -140,9 +142,9 @@ const SudokuBoard: React.FC = () => {
               disabled={!selected}
               aria-label="Clear cell"
               style={{
-                padding: '10px 0', borderRadius: 10, border: 'none',
-                background: 'var(--ion-item-background)', color: 'var(--ion-text-color)',
-                cursor: selected ? 'pointer' : 'default', opacity: selected ? 1 : 0.5,
+                padding: '11px 0', borderRadius: 10, border: '2px solid var(--gm-border)',
+                background: 'var(--gm-panel)', color: 'var(--gm-text)',
+                cursor: selected ? 'pointer' : 'default', opacity: selected ? 1 : 0.6,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
@@ -153,7 +155,7 @@ const SudokuBoard: React.FC = () => {
             onClick={() => newGame()}
             style={{
               display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none',
-              color: 'var(--ion-color-medium)', fontSize: 13, cursor: 'pointer', padding: 8,
+              color: 'var(--gm-muted)', fontSize: 14, cursor: 'pointer', padding: 8,
             }}
           >
             <IonIcon icon={refreshOutline} /> New puzzle

@@ -25,6 +25,7 @@ import LinkDeviceQR from '@/pages/chats/LinkDeviceQR';
 import LinkDeviceEmail from '@/pages/chats/LinkDeviceEmail';
 import LinkDeviceSuccess from '@/pages/chats/LinkDeviceSuccess';
 import AddContact from '@/pages/chats/Addcontact';
+import PhoneContacts from '@/pages/chats/PhoneContacts';
 import ContactsBrowse from '@/pages/chats/Contactsbrowse';
 import Starred from '@/pages/chats/Starred';
 import CallScreen from '@/pages/calls/CallScreen';
@@ -228,6 +229,7 @@ const Routes: React.FC = () => (
         <PrivateRoute exact path="/chats/link-device-email" component={LinkDeviceEmail} />
         <PrivateRoute exact path="/chats/link-device-success" component={LinkDeviceSuccess} />
         <PrivateRoute exact path="/chats/add-contact" component={AddContact} />
+        <PrivateRoute exact path="/chats/phone-contacts" component={PhoneContacts} />
         <PrivateRoute exact path="/chats/contacts-browse" component={ContactsBrowse} />
         <PrivateRoute exact path="/chats/starred" component={Starred} />
         <PrivateRoute exact path="/chats/room/:conversationId" component={ChatRoom} />

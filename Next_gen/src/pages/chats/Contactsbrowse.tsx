@@ -204,7 +204,7 @@ const ContactsBrowse: React.FC = () => {
 
         {filtered.length === 0 && (
           <div className="ion-text-center ion-padding" style={{ color: 'var(--ion-color-medium)' }}>
-            {tr('No contacts yet. Tap + to add someone by phone number.')}
+            {tr('No contacts yet. Tap + to add someone by email or phone number.')}
           </div>
         )}
 

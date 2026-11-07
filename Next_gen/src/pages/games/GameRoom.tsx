@@ -7,6 +7,7 @@ import { personCircle, hardwareChipOutline } from 'ionicons/icons';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
+import '@/pages/games/games.css';
 
 import {
   emptyTtt, tttValidMove, tttWinner, tttIsDraw, tttBestMove, type TttState,
@@ -284,6 +285,18 @@ const GameRoom: React.FC = () => {
     );
   }
 
+  // Word Search is a full-screen game with its own top bar (back, settings, level, coins), so it
+  // doesn't use the standard toolbar.
+  if (gameKey === 'word_search') {
+    return (
+      <IonPage>
+        <IonContent fullscreen scrollY style={{ '--background': '#25449A' } as React.CSSProperties}>
+          <WordSearchBoard onBack={() => (history.length > 1 ? history.goBack() : history.replace('/games'))} />
+        </IonContent>
+      </IonPage>
+    );
+  }
+
   if (SOLITAIRE_GAME_KEYS.includes(gameKey)) {
     return (
       <IonPage>
@@ -295,7 +308,6 @@ const GameRoom: React.FC = () => {
         </IonHeader>
         <IonContent fullscreen className="ion-padding">
           {gameKey === 'sudoku' && <SudokuBoard />}
-          {gameKey === 'word_search' && <WordSearchBoard />}
         </IonContent>
       </IonPage>
     );
@@ -310,7 +322,7 @@ const GameRoom: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen className="ion-padding">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 14, fontSize: 14, color: 'var(--ion-color-medium)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 14, fontSize: 14, color: 'var(--gm-muted)', fontWeight: 600 }}>
           <IonIcon icon={state.mode === 'pvai' ? hardwareChipOutline : personCircle} />
           {gameOver
             ? statusText
@@ -342,8 +354,8 @@ const GameRoom: React.FC = () => {
             <button
               onClick={() => history.replace('/games')}
               style={{
-                background: 'var(--ng-blue)', color: '#fff', border: 'none', borderRadius: 12,
-                padding: '10px 20px', fontWeight: 600,
+                background: 'var(--gm-accent)', color: '#fff', border: 'none', borderRadius: 12,
+                padding: '11px 22px', fontWeight: 700,
               }}
             >
               Back to Games

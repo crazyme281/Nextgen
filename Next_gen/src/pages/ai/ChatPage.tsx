@@ -140,8 +140,9 @@ export function ChatPage() {
       const chat = await createConversation(null);
       setStarting(false);
       if (chat) {
-        // push (not replace) so Back returns to the AI home screen, like any other screen.
-        router.push(`/ai/chat/${chat.id}`, "forward", "push");
+        // Replace the empty AI home screen with the new chat, so one Back press goes straight to where the
+        // user came from (the chat list) instead of stopping on the empty AI home first.
+        router.push(`/ai/chat/${chat.id}`, "forward", "replace");
       } else {
         // Couldn't create the chat (no connection, or the server refused) — put the draft back and say so
         // instead of sitting on the welcome screen looking broken.
