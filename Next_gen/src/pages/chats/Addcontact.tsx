@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import BrandMark from '@/components/BrandMark';
 import { tr } from '@/i18n';
-import { findNextgenUser } from '@/lib/phoneContacts';
+import { findNextgenUser } from '@/lib/Phonecontacts';
 
 type ExtraFieldKey =
   | 'phonetic_name' | 'address' | 'nickname' | 'website'
