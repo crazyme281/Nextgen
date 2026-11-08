@@ -34,6 +34,31 @@ export type ReadResult =
 type PickerContact = { name?: string[]; tel?: string[]; email?: string[] };
 type ContactsPicker = { select: (props: string[], opts?: { multiple?: boolean }) => Promise<PickerContact[]> };
 
+/** The parts of the native plugin's contact shape that we read. */
+interface NativeContact {
+  name?: { display?: string | null; given?: string | null; family?: string | null } | null;
+  phones?: { number?: string | null }[] | null;
+  emails?: { address?: string | null }[] | null;
+}
+
+interface MatchRow {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  phone: string | null;
+  phone_key: string;
+}
+
+type RpcResult = { data: unknown; error: { message: string; code?: string } | null };
+
+/**
+ * match_phone_contacts and find_user_by_email are database functions added after the generated
+ * src/types/database.types.ts was made, so the typed supabase.rpc() doesn't know them. Calling through this
+ * loosely-typed handle keeps the build working whether or not the types file has been regenerated.
+ */
+const callRpc = (fn: string, args: Record<string, unknown>): Promise<RpcResult> =>
+  (supabase as unknown as { rpc: (f: string, a: Record<string, unknown>) => Promise<RpcResult> }).rpc(fn, args);
+
 /** Same rule as the database's phone_key(): the last 10 digits, so +234 803…, 0803… and 234803… all match. */
 export function phoneKey(raw: string): string | null {
   const digits = raw.replace(/\D/g, '');
@@ -42,7 +67,7 @@ export function phoneKey(raw: string): string | null {
 
 export function canReadPhoneContacts(): boolean {
   if (Capacitor.isNativePlatform()) return true;
-  return typeof navigator !== 'undefined' && 'contacts' in navigator && !!(navigator as unknown as { contacts?: ContactsPicker }).contacts;
+  return typeof navigator !== 'undefined' && !!(navigator as unknown as { contacts?: ContactsPicker }).contacts;
 }
 
 export async function readDeviceContacts(): Promise<ReadResult> {
@@ -54,7 +79,8 @@ export async function readDeviceContacts(): Promise<ReadResult> {
       if (perm.contacts !== 'granted') return { status: 'denied' };
 
       const res = await Contacts.getContacts({ projection: { name: true, phones: true, emails: true } });
-      const contacts: DeviceContact[] = (res.contacts ?? []).map((c) => ({
+      const list = (res.contacts ?? []) as unknown as NativeContact[];
+      const contacts: DeviceContact[] = list.map((c: NativeContact) => ({
         name: c.name?.display ?? [c.name?.given, c.name?.family].filter(Boolean).join(' '),
         phones: (c.phones ?? []).map((p) => p.number ?? '').filter(Boolean),
         emails: (c.emails ?? []).map((e) => e.address ?? '').filter(Boolean),
@@ -90,9 +116,9 @@ export async function matchDeviceContacts(contacts: DeviceContact[]): Promise<Ma
 
   const found = new Map<string, MatchedContact>();
   for (let i = 0; i < keys.length; i += 500) {
-    const { data, error } = await supabase.rpc('match_phone_contacts', { p_phones: keys.slice(i, i + 500) });
-    if (error) throw error;
-    (data ?? []).forEach((row: { id: string; full_name: string | null; avatar_url: string | null; phone: string | null; phone_key: string }) => {
+    const { data, error } = await callRpc('match_phone_contacts', { p_phones: keys.slice(i, i + 500) });
+    if (error) throw new Error(error.message);
+    ((data as MatchRow[] | null) ?? []).forEach((row) => {
       if (!found.has(row.id)) {
         found.set(row.id, {
           id: row.id,
@@ -111,15 +137,15 @@ export async function matchDeviceContacts(contacts: DeviceContact[]): Promise<Ma
 export async function findNextgenUser(opts: { email?: string; phone?: string }): Promise<{ id: string; full_name: string | null } | null> {
   const email = opts.email?.trim();
   if (email) {
-    const { data, error } = await supabase.rpc('find_user_by_email', { p_email: email });
-    if (error) throw error;
+    const { data, error } = await callRpc('find_user_by_email', { p_email: email });
+    if (error) throw new Error(error.message);
     const row = (data as { id: string; full_name: string | null }[] | null)?.[0];
     if (row) return row;
   }
   const phone = opts.phone?.trim();
   if (phone) {
-    const { data, error } = await supabase.rpc('match_phone_contacts', { p_phones: [phone] });
-    if (error) throw error;
+    const { data, error } = await callRpc('match_phone_contacts', { p_phones: [phone] });
+    if (error) throw new Error(error.message);
     const row = (data as { id: string; full_name: string | null }[] | null)?.[0];
     if (row) return row;
   }

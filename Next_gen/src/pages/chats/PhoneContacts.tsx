@@ -43,11 +43,11 @@ const PhoneContacts: React.FC = () => {
     }
     try {
       setDeviceTotal(result.contacts.length);
-      const found = await matchDeviceContacts(result.contacts);
+      const found: MatchedContact[] = await matchDeviceContacts(result.contacts);
       const { data: existing } = await supabase.from('contacts').select('contact_user_id').eq('owner_id', user.id);
-      const already = new Set((existing ?? []).map((r: { contact_user_id: string }) => r.contact_user_id));
+      const already = new Set<string>((existing ?? []).map((r: { contact_user_id: string }) => r.contact_user_id));
       setAdded(already);
-      setMatches(found.sort((a, b) => a.deviceName.localeCompare(b.deviceName)));
+      setMatches([...found].sort((a: MatchedContact, b: MatchedContact) => a.deviceName.localeCompare(b.deviceName)));
       setStage('ready');
     } catch {
       setStage('error');
@@ -88,7 +88,7 @@ const PhoneContacts: React.FC = () => {
     else history.replace('/tabs/contacts');
   };
 
-  const remaining = matches.filter((m) => !added.has(m.id));
+  const remaining = matches.filter((m: MatchedContact) => !added.has(m.id));
 
   return (
     <IonPage>
@@ -149,7 +149,7 @@ const PhoneContacts: React.FC = () => {
                 : tr('{n} of your {total} phone contacts are on Nextgen', { n: matches.length, total: deviceTotal })}
             </div>
             <IonList lines="full">
-              {matches.map((m) => {
+              {matches.map((m: MatchedContact) => {
                 const isAdded = added.has(m.id);
                 return (
                   <IonItem key={m.id}>
