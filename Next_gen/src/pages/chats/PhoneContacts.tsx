@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { tr } from '@/i18n';
 import {
   type MatchedContact, canReadPhoneContacts, matchDeviceContacts, readDeviceContacts,
-} from '@/lib/phoneContacts';
+} from '@/lib/Phonecontacts';
 
 type Stage = 'loading' | 'denied' | 'unsupported' | 'error' | 'ready';
 
